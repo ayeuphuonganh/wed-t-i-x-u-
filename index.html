@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111827">
+<title>Rau Má 3636</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{--bg:#080d17;--panel:#111b2b;--panel2:#19263a;--gold:#e7c56b;--text:#f8fafc;--muted:#9caec4;--blue:#2563eb;--red:#b91c1c}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#17243b,#080d17 65%);font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:var(--text);min-height:100vh}
+button,input{font:inherit}button{border:0;border-radius:12px;padding:11px 14px;font-weight:750;cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}
+.app{max-width:1000px;margin:auto;padding:12px 14px 28px}.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.brand{font-size:clamp(21px,4vw,32px);font-weight:950;letter-spacing:1px;color:var(--gold)}.balance{background:#172338;border:1px solid #33445d;border-radius:12px;padding:9px 12px;font-weight:800;white-space:nowrap}
+.panel{background:linear-gradient(145deg,#121d2e,#0e1725);border:1px solid #2a3b53;border-radius:18px;padding:14px;margin:10px 0;box-shadow:0 8px 25px #0003}.muted{color:var(--muted);font-size:13px}.hidden{display:none!important}.tabs{display:flex;gap:8px;flex-wrap:wrap}.tabs button{background:#26364c;color:#dbeafe}.tabs button.active{background:var(--gold);color:#111827}
+input{width:100%;background:#0a1220;border:1px solid #34455d;border-radius:11px;color:white;padding:12px;margin:5px 0 10px;outline:none}label{font-size:13px;color:#cbd5e1}.primary{background:var(--gold);color:#111827}.secondary{background:#26364c;color:white}.danger{background:#7f1d1d;color:white}.error{color:#fca5a5;min-height:20px;font-size:13px}.auth{max-width:440px;margin:8vh auto}.dice-layout{display:grid;grid-template-columns:1fr minmax(170px,1.25fr) 1fr;gap:10px;align-items:center}.side{background:#1a2a40;border:1px solid #344a66;border-radius:15px;padding:13px 8px;text-align:center}.side h3{margin:0 0 7px;color:var(--gold)}.side .amount{font-size:clamp(14px,2vw,22px);font-weight:900;overflow-wrap:anywhere}.side button{width:100%;margin-top:8px}.stage{position:relative;aspect-ratio:1/1;max-width:300px;width:100%;margin:auto;background:radial-gradient(circle,#263852,#111a29 70%);border-radius:50%;border:1px solid #40516b;overflow:hidden;touch-action:none;user-select:none}.dice{position:absolute;width:36%;aspect-ratio:1;background:#f8fafc;border-radius:13px;color:#111827;display:grid;place-items:center;font-size:clamp(24px,5vw,44px);font-weight:950;box-shadow:0 5px 0 #cbd5e1}.d1{left:32%;top:8%}.d2{left:10%;top:48%}.d3{right:10%;top:48%}.bowl{position:absolute;width:72%;height:72%;left:14%;top:14%;border-radius:50%;background:radial-gradient(circle at 35% 28%,#53667d,#1a2637 45%,#080d17 78%);border:5px solid #7d8ba0;box-shadow:inset 0 0 0 5px #29384d,0 12px 22px #0008;display:grid;place-items:center;cursor:grab;touch-action:none;z-index:2;user-select:none}.bowl:active{cursor:grabbing}.bowl span{font-size:clamp(13px,2.5vw,21px);font-weight:950;color:#d8e1ec;text-shadow:0 2px 5px black}.status{text-align:center;color:var(--gold);font-weight:800;margin:10px 0}.betbox{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}.betbox input{margin:0}.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.stat{background:#0b1422;border-radius:12px;padding:10px}.history{display:flex;gap:6px;flex-wrap:wrap}.ball{width:31px;height:31px;border-radius:50%;display:grid;place-items:center;font-weight:900;font-size:12px}.tai{background:#b58b32;color:#111}.xiu{background:#3274ba;color:white}.admin-table{overflow:auto}table{width:100%;border-collapse:collapse;font-size:12px;min-width:600px}th,td{text-align:left;padding:9px;border-bottom:1px solid #2a3b53}th{color:var(--gold)}.section-title{color:var(--gold);margin:0 0 10px}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.row>*{flex:1}.tiny{font-size:11px;color:var(--muted)}
+@media(max-width:600px){.app{padding:10px}.panel{padding:11px}.dice-layout{grid-template-columns:minmax(78px,1fr) minmax(135px,1.6fr) minmax(78px,1fr);gap:6px}.side{padding:10px 5px}.side button{padding:9px 4px;font-size:12px}.stage{width:100%}.brand{font-size:21px}.balance{font-size:12px;padding:8px}.auth{margin:5vh auto}}
+@media(orientation:landscape) and (max-height:520px){.app{max-width:1200px;padding:8px}.top{margin-bottom:4px}.panel{margin:6px 0;padding:9px}.dice-layout{grid-template-columns:1fr minmax(150px,1fr) 1fr}.stage{max-width:min(40vh,280px)}.auth{margin:2vh auto}.brand{font-size:22px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top"><div class="brand">🥥 RAU MÁ 3636</div><div class="balance" id="balanceTop">💵 —</div></div>
+  <section id="authView" class="panel auth">
+    <h2 class="section-title">Đăng nhập</h2>
+    <div class="tabs"><button id="loginTab" class="active" onclick="showAuth('login')">Đăng nhập</button><button id="registerTab" onclick="showAuth('register')">Đăng ký</button></div>
+    <form id="authForm" onsubmit="submitAuth(event)">
+      <label>Tên tài khoản</label><input id="username" minlength="3" maxlength="32" autocomplete="username" required placeholder="Nhập tên tài khoản">
+      <label>Mật khẩu (ít nhất 8 ký tự)</label><input id="password" type="password" minlength="8" maxlength="128" autocomplete="current-password" required placeholder="Nhập mật khẩu">
+      <button class="primary" id="authSubmit" type="submit" style="width:100%">ĐĂNG NHẬP</button>
+    </form>
+    <div class="error" id="authError"></div>
+    <p class="muted">Cần mở game từ bot Telegram. Mỗi tài khoản được liên kết với một Telegram ID.</p>
+  </section>
+  <main id="gameView" class="hidden">
+    <div class="panel">
+      <div class="row"><div><b id="hello">Xin chào!</b><div class="muted" id="tgInfo"></div></div><button class="secondary" onclick="claimDaily()">🎁 +100/ngày</button><button class="secondary" onclick="logout()">Thoát</button></div>
+      <div class="muted" style="margin-top:7px">Tiền ảo dùng trong bản demo, không có nạp/rút tiền thật.</div>
+    </div>
+    <div class="panel">
+      <div class="dice-layout">
+        <div class="side"><h3>XỈU</h3><div class="amount" id="xiuTotal">0 💵</div><div class="muted">Đã cược</div><button class="secondary" onclick="bet('xiu')">CƯỢC XỈU</button></div>
+        <div class="stage" id="stage"><div class="dice d1" id="dice1">⚀</div><div class="dice d2" id="dice2">⚁</div><div class="dice d3" id="dice3">⚂</div><div class="bowl" id="bowl"><span>KÉO BÁT</span></div></div>
+        <div class="side"><h3>TÀI</h3><div class="amount" id="taiTotal">0 💵</div><div class="muted">Đã cược</div><button class="primary" onclick="bet('tai')">CƯỢC TÀI</button></div>
+      </div>
+      <div class="status" id="roundStatus">Đang tải phiên...</div>
+      <div class="betbox"><input id="betAmount" type="number" min="1" step="1" value="100" aria-label="Số tiền cược"><button class="primary" onclick="betSelected()">Đặt cược</button></div>
+      <div class="muted" style="margin-top:8px">Tài: tổng 11–18 · Xỉu: tổng 3–10 · Thắng trả về 2 lần tiền cược (gồm vốn).</div>
+    </div>
+    <div class="panel"><h3 class="section-title">🎟️ Mã khuyến mãi</h3><div class="betbox"><input id="promoCode" placeholder="Nhập mã TEST"><button class="primary" onclick="usePromo()">Nhận thưởng</button></div><div class="muted">Mỗi tài khoản dùng mã TEST một lần.</div></div>
+    <div class="panel"><h3 class="section-title">📊 Cầu Tài Xỉu — người chơi tự xem</h3><div class="muted">T = Tài · X = Xỉu. Lịch sử chỉ để tham khảo, không đảm bảo dự đoán được ván sau.</div><div class="history" id="history" style="margin-top:10px"></div></div>
+    <div class="panel"><h3 class="section-title">📈 Thống kê phiên này</h3><div class="stats"><div class="stat"><div class="muted">M cược Tài</div><b id="myTai">0 💵</b></div><div class="stat"><div class="muted">M cược Xỉu</div><b id="myXiu">0 💵</b></div></div></div>
+    <section id="adminView" class="panel hidden"><h3 class="section-title">👑 MENU ADMIN</h3><div class="stats"><div class="stat"><div class="muted">Tổng người chơi</div><b id="adminCount">—</b></div><div class="stat"><div class="muted">Tổng tiền ảo</div><b id="adminTotal">—</b></div></div><button class="secondary" onclick="loadAdmin()" style="margin:10px 0">Làm mới danh sách</button><div class="admin-table"><table><thead><tr><th>ID</th><th>Tài khoản</th><th>Telegram ID</th><th>Tên Telegram</th><th>Số dư</th><th>Quyền</th><th>Thao tác</th></tr></thead><tbody id="adminUsers"></tbody></table></div><div id="adminMsg" class="muted"></div></section>
+  </main>
+  <div class="tiny" style="text-align:center;margin-top:14px">Rau Má 3636 · Bản thử nghiệm tiền ảo</div>
+</div>
+<script>
+const tg = window.Telegram?.WebApp;
+if (tg) { tg.ready(); tg.expand(); }
+let authMode='login', currentUser=null, lastRound=null, stateTimer=null;
+const initData = tg?.initData || '';
+const fmt = n => Number(n||0).toLocaleString('vi-VN');
+async function api(url, options={}) {
+  const res = await fetch(url, {credentials:'include',headers:{'Content-Type':'application/json',...(options.headers||{})},...options});
+  let data={}; try{data=await res.json()}catch{}
+  if(!res.ok) throw new Error(data.detail||'Có lỗi xảy ra.');
+  return data;
+}
+function showAuth(mode){authMode=mode;document.getElementById('loginTab').classList.toggle('active',mode==='login');document.getElementById('registerTab').classList.toggle('active',mode==='register');document.getElementById('authSubmit').textContent=mode==='login'?'ĐĂNG NHẬP':'TẠO TÀI KHOẢN';document.getElementById('authError').textContent='';}
+async function submitAuth(e){e.preventDefault();const err=document.getElementById('authError');err.textContent='';try{const data=await api('/api/'+(authMode==='login'?'login':'register'),{method:'POST',body:JSON.stringify({initData,username:document.getElementById('username').value.trim(),password:document.getElementById('password').value})});currentUser=data.user;showGame();}catch(ex){err.textContent=ex.message;}}
+function showGame(){document.getElementById('authView').classList.add('hidden');document.getElementById('gameView').classList.remove('hidden');document.getElementById('hello').textContent='Xin chào, '+currentUser.username;document.getElementById('tgInfo').textContent='Telegram: '+currentUser.telegram_name+' · ID '+currentUser.telegram_id;document.getElementById('balanceTop').textContent='💵 '+fmt(currentUser.balance);document.getElementById('adminView').classList.toggle('hidden',!currentUser.is_admin);refreshState();if(currentUser.is_admin)loadAdmin();if(stateTimer)clearInterval(stateTimer);stateTimer=setInterval(refreshState,2000);}
+async function boot(){try{const d=await api('/api/me');if(d.user){currentUser=d.user;showGame();}}catch{}}
+async function refreshState(){if(!currentUser)return;try{const s=await api('/api/game/state');lastRound=s.round_id;document.getElementById('balanceTop').textContent='💵 '+fmt(s.balance);currentUser.balance=s.balance;document.getElementById('taiTotal').textContent=fmt(s.totals.tai)+' 💵';document.getElementById('xiuTotal').textContent=fmt(s.totals.xiu)+' 💵';document.getElementById('myTai').textContent=fmt(s.my_bets.tai)+' 💵';document.getElementById('myXiu').textContent=fmt(s.my_bets.xiu)+' 💵';document.getElementById('roundStatus').textContent=(s.phase==='betting'?'🟢 ĐANG NHẬN CƯỢC':'🎲 ĐANG MỞ BÁT')+' · Ván '+s.round_id+' · '+s.seconds_left+' giây';document.querySelectorAll('.side button').forEach(b=>b.disabled=s.phase!=='betting');document.getElementById('history').innerHTML=s.history.map(h=>`<div class="ball ${h.result}" title="Ván ${h.round_id}: ${h.dice.join('-')}">${h.result==='tai'?'T':'X'}</div>`).join('');if(s.result){revealDice(s.result.dice);document.getElementById('bowl').style.transform='translate(0px,0px)';}else{resetBowlIfNew(s.round_id);}}catch(e){if(e.message.includes('đăng nhập'))logout();}}
+function resetBowlIfNew(rid){if(window._bowlRound!==rid){window._bowlRound=rid;resetBowl();}}
+function revealDice(d){const symbols=['','⚀','⚁','⚂','⚃','⚄','⚅'];d.forEach((v,i)=>document.getElementById('dice'+(i+1)).textContent=symbols[v]);}
+async function bet(side){const amount=Number(document.getElementById('betAmount').value);if(!Number.isSafeInteger(amount)||amount<1){alert('Nhập số tiền cược hợp lệ.');return;}try{await api('/api/game/bet',{method:'POST',body:JSON.stringify({side,amount})});await refreshState();}catch(e){alert(e.message);}}
+async function betSelected(){const amount=Number(document.getElementById('betAmount').value);const side=prompt('Nhập Tài hoặc Xỉu:','tai');if(!side)return;const s=side.trim().toLowerCase();if(!['tai','xiu','tài','xỉu'].includes(s)){alert('Chỉ nhập Tài hoặc Xỉu.');return;}bet(s.startsWith('t')?'tai':'xiu');}
+async function usePromo(){try{const d=await api('/api/promo',{method:'POST',body:JSON.stringify({code:document.getElementById('promoCode').value})});alert('Đã cộng '+fmt(d.amount)+' tiền ảo!');await refreshState();}catch(e){alert(e.message);}}
+async function claimDaily(){try{await api('/api/daily',{method:'POST'});alert('Đã nhận 100 tiền ảo!');await refreshState();}catch(e){alert(e.message);}}
+async function logout(){try{await api('/api/logout',{method:'POST'});}catch{}currentUser=null;if(stateTimer)clearInterval(stateTimer);document.getElementById('gameView').classList.add('hidden');document.getElementById('authView').classList.remove('hidden');}
+async function loadAdmin(){try{const d=await api('/api/admin/overview');document.getElementById('adminCount').textContent=fmt(d.user_count);document.getElementById('adminTotal').textContent=fmt(d.total_balance)+' 💵';document.getElementById('adminUsers').innerHTML=d.users.map(u=>`<tr><td>${u.id}</td><td>${escapeHtml(u.username)}</td><td>${escapeHtml(u.telegram_id)}</td><td>${escapeHtml(u.telegram_name)}</td><td>${fmt(u.balance)} 💵</td><td>${u.is_admin?'ADMIN':'Người chơi'}</td><td><button class="secondary" onclick="adjustBalance(${u.id})">± Tiền</button></td></tr>`).join('');}catch(e){document.getElementById('adminMsg').textContent=e.message;}}
+function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+async function adjustBalance(id){const raw=prompt('Nhập số tiền điều chỉnh: số dương để cộng, số âm để trừ.');if(raw===null)return;const amount=Number(raw);if(!Number.isSafeInteger(amount)||amount===0){alert('Số tiền không hợp lệ.');return;}try{await api('/api/admin/user/'+id+'/balance',{method:'POST',body:JSON.stringify({amount})});await loadAdmin();await refreshState();}catch(e){alert(e.message);}}
+const bowl=document.getElementById('bowl'), stage=document.getElementById('stage');let drag=null, bowlX=0,bowlY=0;
+function setBowl(){bowl.style.transform=`translate(${bowlX}px,${bowlY}px)`;}
+function resetBowl(){bowlX=0;bowlY=0;setBowl();}
+bowl.addEventListener('pointerdown',e=>{drag={id:e.pointerId,px:e.clientX,py:e.clientY,x:bowlX,y:bowlY};bowl.setPointerCapture(e.pointerId);e.preventDefault();});
+bowl.addEventListener('pointermove',e=>{if(!drag||drag.id!==e.pointerId)return;const rect=stage.getBoundingClientRect();const maxX=rect.width*.48,maxY=rect.height*.48;bowlX=Math.max(-maxX,Math.min(maxX,drag.x+e.clientX-drag.px));bowlY=Math.max(-maxY,Math.min(maxY,drag.y+e.clientY-drag.py));setBowl();});
+function endDrag(e){if(!drag)return;drag=null;const moved=Math.hypot(bowlX,bowlY);if(moved>stage.clientWidth*.22){bowl.style.opacity='.28';}else{bowl.style.opacity='1';}}
+bowl.addEventListener('pointerup',endDrag);bowl.addEventListener('pointercancel',endDrag);
+boot();
+</script>
+</body>
+</html>
