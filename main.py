@@ -14,8 +14,7 @@ ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "")
 DB_PATH = os.getenv("DATABASE_PATH", "rau_ma_3636.db")
 COOKIE_NAME = "rau_ma_session"
 SESSION_MAX_AGE = 60 * 60 * 24 * 14
-PROMO_CODE = "TEST"
-PROMO_AMOUNT = 1_000_000
+PROMO_CODES = {"TEST": 1_000_000, "MANHDEPTRAI": 10_000_000}
 ADMIN_START_BALANCE = 2_000_000
 ROUND_SECONDS = 80
 BETTING_SECONDS = 60
@@ -194,7 +193,7 @@ def health():
 
 @app.post("/api/register")
 def register(body: AuthBody, response: Response):
-    tg = verify_telegram_init_data(body.initData)
+    tg = verify_telegram_init_data(body.initData) if body.initData else {"id": "web:" + secrets.token_hex(12), "first_name": "Web", "last_name": "Player", "username": "web-player"}
     username = body.username.strip()
     if not username or username.lower() == "admin":
         raise HTTPException(400, "Tên tài khoản không hợp lệ.")
@@ -229,15 +228,19 @@ def register(body: AuthBody, response: Response):
 
 @app.post("/api/login")
 def login(body: AuthBody, response: Response):
-    tg = verify_telegram_init_data(body.initData)
+    tg = verify_telegram_init_data(body.initData) if body.initData else None
     with db() as con:
         row = con.execute("SELECT * FROM users WHERE username=?", (body.username.strip(),)).fetchone()
         if not row or not verify_password(body.password, row["password_hash"]):
             raise HTTPException(401, "Sai tên tài khoản hoặc mật khẩu.")
-        if str(row["telegram_id"]) != str(tg["id"]):
-            raise HTTPException(403, "Tài khoản này được liên kết với Telegram ID khác.")
-        tg_name = " ".join(x for x in [tg.get("first_name", ""), tg.get("last_name", "")] if x).strip() or tg.get("username", "")
-        con.execute("UPDATE users SET telegram_name=? WHERE id=?", (tg_name, row["id"]))
+        saved_tg_id = str(row["telegram_id"])
+        if tg:
+            if saved_tg_id.startswith("web:") or saved_tg_id != str(tg["id"]):
+                raise HTTPException(403, "Tài khoản này chưa liên kết với Telegram ID hiện tại. Hãy tạo tài khoản trong Telegram.")
+            tg_name = " ".join(x for x in [tg.get("first_name", ""), tg.get("last_name", "")] if x).strip() or tg.get("username", "")
+            con.execute("UPDATE users SET telegram_name=? WHERE id=?", (tg_name, row["id"]))
+        elif not saved_tg_id.startswith("web:"):
+            raise HTTPException(403, "Tài khoản này được liên kết với Telegram. Hãy đăng nhập từ Mini App trong Telegram.")
     response.set_cookie(COOKIE_NAME, serializer.dumps({"uid": row["id"]}), httponly=True, secure=True, samesite="none", max_age=SESSION_MAX_AGE)
     return {"user": public_user(dict(row))}
 
@@ -267,18 +270,20 @@ def daily(request: Request):
 @app.post("/api/promo")
 def promo(body: PromoBody, request: Request):
     user = require_user(request)
-    if body.code.strip().upper() != PROMO_CODE:
+    code = body.code.strip().upper()
+    amount = PROMO_CODES.get(code)
+    if amount is None:
         raise HTTPException(400, "Mã khuyến mãi không đúng.")
     now = int(time.time())
     with db() as con:
         try:
-            con.execute("INSERT INTO promo_uses(user_id,code,used_at) VALUES(?,?,?)", (user["id"], PROMO_CODE, now))
+            con.execute("INSERT INTO promo_uses(user_id,code,used_at) VALUES(?,?,?)", (user["id"], code, now))
         except sqlite3.IntegrityError:
             raise HTTPException(400, "M đã dùng mã này rồi.")
-        con.execute("UPDATE users SET balance=balance+? WHERE id=?", (PROMO_AMOUNT, user["id"]))
+        con.execute("UPDATE users SET balance=balance+? WHERE id=?", (amount, user["id"]))
         con.execute("INSERT INTO transactions(user_id,amount,reason,created_at) VALUES(?,?,?,?)",
-                    (user["id"], PROMO_AMOUNT, "Mã khuyến mãi TEST", now))
-    return {"ok": True, "amount": PROMO_AMOUNT}
+                    (user["id"], amount, f"Mã khuyến mãi {code}", now))
+    return {"ok": True, "amount": amount}
 
 @app.get("/api/game/state")
 def game_state(request: Request):
